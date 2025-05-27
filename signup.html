@@ -1,1 +1,132 @@
 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign Up Page</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .signup-container {
+        max-width: 500px;
+        margin: 5% auto;
+        padding: 2rem;
+        background: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="signup-container">
+        <h2 class="text-center mb-4">Create Account</h2>
+        <form id="signupForm">
+          <div class="mb-3">
+            <label for="fullName" class="form-label">Full Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="fullName"
+              name="fullName"
+              placeholder="Enter your name"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              placeholder="Enter email"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              name="password"
+              placeholder="Create password"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label"
+              >Confirm Password</label
+            >
+            <input
+              type="password"
+              class="form-control"
+              id="confirmPassword"
+              name="confirmPassword"
+              placeholder="Confirm password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-success w-100">Sign Up</button>
+          <div class="text-center mt-3">
+            <small>Already have an account? <a href="/">Login</a></small>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="alertBox" class="alert mt-3 d-none" role="alert"></div>
+
+    <script>
+      const form = document.getElementById("signupForm");
+      const alertBox = document.getElementById("alertBox");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        const data = {
+          fullName: formData.get("fullName"),
+          email: formData.get("email"),
+          password: formData.get("password"),
+          confirmPassword: formData.get("confirmPassword"),
+        };
+
+        try {
+          const response = await fetch("http://127.0.0.1:8000/signup", {
+            method: "POST",
+            body: new URLSearchParams(data),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alertBox.className = "alert alert-success mt-3";
+            alertBox.innerText = result.message;
+            alertBox.classList.remove("d-none");
+            form.reset();
+          } else {
+            alertBox.className = "alert alert-danger mt-3";
+            alertBox.innerText = result.detail || "Something went wrong.";
+            alertBox.classList.remove("d-none");
+          }
+        } catch (error) {
+          console.log(error);
+          alertBox.className = "alert alert-danger mt-3";
+          alertBox.innerText = "Failed to connect to server.";
+          alertBox.classList.remove("d-none");
+        }
+      });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
